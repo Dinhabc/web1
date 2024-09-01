@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>phân công </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 15px ;
+            background-color: #120A8F;
+          
+            h1{
+                color:aqua;
+                
+                font-size:35px;
+                text-align:center
+            }
+        }
+        .okay{
+           align-items: center;
+            display:flex;
+            flex-direction:column;
+            background-color: #F0F8FF;
+            padding:25px
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin-top: 5px;
+        }
+        .file1{
+            margin-top: 20px; 
+            cursor: pointer;
+            border: 1px solid;
+            height:50px;
+            width:100px;
+            position:relative;
+            
+        }
+        .labelfile{
+            width:100%;
+            height:100%;
+            text-align:center;
+            background-color:#007bff;
+            display:block;
+            margin:0px;
+            cursor:pointer;
+            line-height:50px;
+            color:white
+        }
+        #fileInput{
+            width:100%;
+           height:100%;
+            opacity:0;
+            position:absolute;
+            cursor:pointer;
+            top:0;
+            left:0;
+        }
+       .file-name{
+           color:orange
+       }
+
+        .result {
+            margin-top: 30px;
+            overflow-x:auto;
+            width:300px;
+            align:center
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+            text-align: center;
+            padding: 15px;
+            width: 130px;
+            height: 50px;
+        }
+    p{
+        
+    }
+    .box1{
+        display:flex;
+        
+    }
+    .box1>button{
+        margin:15px;
+        padding: 7px 12px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        background-color:#7FFFD4;
+        width:100px;
+        color:red;
+    }
+    .box2{
+        display:flex;
+    }
+    .box2>label{
+        margin:0px
+    }
+    </style>
+</head>
+<body>
+    <div class="okay">
+
+    <h1>Phân công trực nhật</h1>
+
+    <label for="boys">Danh sách bạn nam (mỗi bạn trên một dòng):</label>
+    <textarea id="boys"></textarea>
+
+    <label for="girls">Danh sách bạn nữ (mỗi bạn trên một dòng):</label>
+    <textarea id="girls"></textarea>
+
+        <div class="file1">
+            <label class="labelfile" for="fileInput">Chọn tệp</label>
+            <input type="file" id="fileInput" accept=".txt">
+            
+        </div>
+        <p class="file-name" id="file-name">Chưa có tệp</p>
+    <p>Vui lòng chọn file có định dạng<br>
+    	Nam:<br>
+    	 Kiên<br>
+    	 Tài<br>
+    	 Nữ:<br>
+     	Hoa<br>
+    	 Mai
+    </p>
+    <div class="box1">
+        <button onclick="loadFromFile()">Tải từ file</button>
+
+    <button onclick="generateRandomPairs()">Xếp học sinh</button>
+    </div>
+        <div class="box2">
+            <input id="xoaybang" type="checkbox" onchange="myFunction()">
+            <label for="xoaybang">xoay bảng</label>
+            </div>
+    <p id="den">Các học sinh trực nhiều là: </p>
+
+    <div class="result" id="result">
+        <table id="mytable">
+            <thead>
+                <tr>
+                    <th>Thứ</th>
+                    <th>Quét Sân</th>
+                    <th>Quét lớp</th>
+                    <th>Lau Bảng và đổ rác</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <th>2</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    
+                </tr>
+                <tr>
+                    <th>3</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                   
+                </tr>
+                <tr>
+                    <th>4</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    
+                </tr>
+                <tr>
+                    <th>5</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  
+                </tr>
+                <tr>
+                    <th>6</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                 
+                <tr>
+                    <th>7</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileNameDisplay = document.getElementById('file-name');
+        fileInput.addEventListener('change', function() {
+            const fileName = fileInput.files[0] ? fileInput.files[0].name : 'Chưa có tệp';
+            fileNameDisplay.textContent = fileName;
+            loadFromFile();
+        });
+        function generateRandomPairs() {
+            const boys = document.getElementById('boys').value.trim().split('\n').filter(Boolean);
+            const girls = document.getElementById('girls').value.trim().split('\n').filter(Boolean);
+             if (boys.length + girls.length < 6) {
+                alert("Cần ít nhất 6 học sinh để xếp.");
+                return;
+            }        
+            let choice = function (list) {
+    return list[Math.floor(Math.random() * list.length)]
+}
+let remove = function (list, element) {
+    index = list.indexOf(element)
+    list.splice(index, 1)
+}
+let tongds = [...boys, ...girls];
+let ds_den = [];
+let scv = (boys.length + girls.length) * 3;
+while (scv < 36) {
+    let den = choice(tongds);
+    if (!ds_den.includes(den)) {
+        ds_den.push(den);
+        remove(tongds, den);
+        scv++;
+    }
+}
+ document.getElementById("den").textContent="Các học sinh trực nhiều là: "+ds_den.join(", ")+".";
+let tongcongviec = [...boys, ...boys, ...boys, ...girls, ...girls, ...girls, ...ds_den];
+let ham = function (tongcongviec,boys,girls,ds_den) {
+    let ds = []
+    //thứ 2
+    let qs2 = [];
+    let ql2 = [];
+    let lb_dr2 = [];
+    while (qs2.length < 2) {
+        let tam = choice([...boys, ...ds_den]);
+        if (!girls.includes(tam) && !qs2.includes(tam)) {
+            qs2.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (ql2.length < 2) {
+        let tam = choice([...boys, ...girls, ...ds_den]);
+        if (!girls.includes(tam) && !(qs2.includes(tam) || ql2.includes(tam))) {
+            ql2.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (lb_dr2.length < 2) {
+        let tam = choice([...boys, ...ds_den]);
+        if (qs2.includes(tam) || ql2.includes(tam) || lb_dr2.includes(tam)) {
+            continue
+        }
+        lb_dr2.push(tam);
+        remove(tongcongviec, tam);
+
+    }
+    let thu2 = [qs2.join(" và "), ql2.join(" và "), lb_dr2.join(" và ")];
+    ds = [...ds, ...thu2];
+    //thứ 3
+    let qs3 = [];
+    let ql3 = [];
+    let lb_dr3 = [];
+    while (qs3.length < 2) {
+        let tam = choice(tongcongviec);
+        if (!qs3.includes(tam)) {
+            qs3.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (ql3.length < 2) {
+        let tam = choice(tongcongviec);
+        if (!(qs3.includes(tam) || ql3.includes(tam))) {
+            ql3.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (lb_dr3.length < 2) {
+        let tam = choice(tongcongviec);
+        if (qs3.includes(tam) || ql3.includes(tam) || lb_dr3.includes(tam)) {
+            continue
+        }
+        lb_dr3.push(tam);
+        remove(tongcongviec, tam);
+
+    }
+    let thu3 = [qs3.join(" và "), ql3.join(" và "), lb_dr3.join(" và ")];
+    ds = [...ds, ...thu3];
+    //thứ 4
+    let qs4 = [];
+    let ql4 = [];
+    let lb_dr4 = [];
+    while (qs4.length < 2) {
+        let tam = choice(tongcongviec);
+        if (!qs4.includes(tam)) {
+            qs4.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (ql4.length < 2) {
+        let tam = choice(tongcongviec);
+        if (!(qs4.includes(tam) || ql4.includes(tam))) {
+            ql4.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (lb_dr4.length < 2) {
+        let tam = choice(tongcongviec);
+        if (qs4.includes(tam) || ql4.includes(tam) || lb_dr4.includes(tam)) {
+            continue
+        }
+        lb_dr4.push(tam);
+        remove(tongcongviec, tam);
+
+    }
+    let thu4 = [qs4.join(" và "), ql4.join(" và "), lb_dr4.join(" và ")];
+    ds = [...ds, ...thu4];
+    //thứ 5
+    let qs5 = [];
+    let ql5 = [];
+    let lb_dr5 = [];
+    while (qs5.length < 2) {
+        let tam = choice(tongcongviec);
+        if (!qs5.includes(tam)) {
+            qs5.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (ql5.length < 2) {
+        let tam = choice(tongcongviec);
+        if (!(qs5.includes(tam) || ql5.includes(tam))) {
+            ql5.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (lb_dr5.length < 2) {
+        let tam = choice(tongcongviec);
+        if (qs5.includes(tam) || ql5.includes(tam) || lb_dr5.includes(tam)) {
+            continue
+        }
+        lb_dr5.push(tam);
+        remove(tongcongviec, tam);
+
+    }
+    let thu5 = [qs5.join(" và "), ql5.join(" và "), lb_dr5.join(" và ")];
+    ds = [...ds, ...thu5];
+    //thứ 6
+    let qs6 = [];
+    let ql6 = [];
+    let lb_dr6 = [];
+    while (qs6.length < 2) {
+        let tam = choice(tongcongviec);
+        if (!qs6.includes(tam)) {
+            qs6.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (ql6.length < 2) {
+        let tam = choice(tongcongviec);
+        if (!(qs6.includes(tam) || ql6.includes(tam))) {
+            ql6.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (lb_dr6.length < 2) {
+        let tam = choice(tongcongviec);
+        if (qs6.includes(tam) || ql6.includes(tam) || lb_dr6.includes(tam)) {
+            continue
+        }
+        lb_dr6.push(tam);
+        remove(tongcongviec, tam);
+
+    }
+    let thu6 = [qs6.join(" và "), ql6.join(" và "), lb_dr6.join(" và ")];
+    ds = [...ds, ...thu6];
+    //thứ 7
+    let qs7 = [];
+    let ql7 = [];
+    let lb_dr7 = [];
+    while (qs7.length < 2) {
+        let tam = choice(tongcongviec);
+        if (!qs7.includes(tam)) {
+            qs7.push(tam);
+            remove(tongcongviec, tam);
+        }
+    }
+    while (ql7.length < 2) {
+        let tam = choice(tongcongviec);
+        if (qs7.includes(tam)) {
+            return false;
+        }
+        if (!ql7.includes(tam)){
+            ql7.push(tam);
+          remove(tongcongviec, tam);
+          }
+
+    }
+    if (tongcongviec[0]== tongcongviec[1]) {
+      return false ;
+    }
+    while (lb_dr7.length <2 ) {
+      let tam=choice(tongcongviec);
+      if (qs7.includes(tam) || ql7.includes(tam)){
+        return false ;
+        }
+      if (!lb_dr7.includes(tam)){
+      lb_dr7.push(tam);
+      remove(tongcongviec,tam);
+      } 
+    }
+    
+    let thu7 = [qs7.join(" và "), ql7.join(" và "), lb_dr7.join(" và ")];
+  ds = [...ds, ...thu7];
+  return ds;
+}
+let ds =[]
+while (ds==false) {
+  let ds1=[...tongcongviec];
+  ds=ham(ds1,boys,girls,ds_den);
+}
+//console.log(tongcongviec.length);
+//console.log(ds);
+
+      const rows=document.getElementById("mytable").rows;
+    const cells = document.querySelectorAll('#mytable td');
+    if(rows.length==7){ 
+            cells.forEach(cell => {
+                
+                //if (!cell.innerHTML) {
+                    cell.innerHTML = ds[0]//getRandomPair(boys, girls);
+                ds.splice(0,1);
+               // }
+            });
+    }
+    else{
+        let i=0;
+        let j=0;
+           cells.forEach(cell=> {
+              cell.innerHTML=ds[3*j+i];
+            if (j==5){
+                i++;
+                j=0;
+            }
+             else{  j++}
+           });
+        
+    } 
+        }
+
+        function loadFromFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert("Vui lòng chọn một file trước.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result.split('\n').filter(Boolean);
+                //const middleIndex = Math.ceil(content.length / 2);
+                //const boys = content.slice(0, middleIndex+1);
+                //const girls = content.slice(middleIndex+1);
+                const nam=content.indexOf("Nam:");
+                const nu=content.indexOf("Nữ:");
+                const boys=content.slice(nam+1,nu);
+                const girls=content.slice(nu+1);
+
+                document.getElementById('boys').value = boys.join('\n');
+                document.getElementById('girls').value = girls.join('\n');
+            };
+            reader.readAsText(file);
+        }
+        function myFunction() {
+        const table = document.getElementById('mytable');
+        var box=document.getElementById('xoaybang');
+        const rows = table.rows;
+        const rowCount = rows.length;
+        const colCount = rows[0].cells.length;
+
+        let newTable = '';
+
+        if (box.checked) {
+            for (let i = 0; i < colCount; i++) {
+                newTable += '<tr>';
+                for (let j = 0; j < rowCount; j++) {
+                    if (i==0 || j==0){
+                        newTable+="<th>"+rows[j].cells[i].innerHTML+"</th>"
+                    }
+                    else{
+                        newTable += '<td>' + rows[j].cells[i].innerHTML + '</td>';
+                    }
+                }
+                newTable += '</tr>';
+            }
+        } else {
+            for (let i = 0; i < colCount; i++) {
+                newTable += '<tr>';
+                for (let j = 0; j < rowCount; j++) {
+                    if (i==0 || j==0){
+                        newTable+="<th>"+rows[j].cells[i].innerHTML+"</th>"
+                    }
+                    else{
+                        newTable += '<td>' + rows[j].cells[i].innerHTML + '</td>';
+                    }
+                }
+                newTable += '</tr>';
+            }
+        }
+
+        table.innerHTML = newTable;
+    }
+    </script>
+
+</body>
+</html>
